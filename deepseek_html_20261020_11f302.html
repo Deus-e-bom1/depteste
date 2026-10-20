@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Minha Conta - Ecred</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --green-primary: #a3e635;
+            --green-dark: #65a30d;
+            --bg-dark: #000000;
+            --bg-card: #111111;
+            --bg-modal: #1a1a1a;
+            --text-white: #ffffff;
+            --text-gray: #9ca3af;
+            --border-color: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Header do Usuário */
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 44px;
+            height: 44px;
+            background-color: var(--green-primary);
+            color: var(--bg-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .user-greeting {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-greeting span {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .user-greeting strong {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            background-color: var(--bg-card);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        
+        .notification-btn::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background-color: var(--green-primary);
+            border-radius: 50%;
+            border: 2px solid var(--bg-card);
+        }
+
+        /* Card de Saldo */
+        .balance-card {
+            background: linear-gradient(145deg, #0a1207, #060a04);
+            border: 1px solid #1f2e18;
+            border-radius: 20px;
+            padding: 25px 20px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .balance-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .balance-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .balance-brand strong {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--green-primary);
+        }
+
+        .balance-brand span {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .balance-brand span::before {
+            content: '·';
+            margin: 0 5px;
+        }
+
+        .account-info {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 15px;
+        }
+
+        .account-info span {
+            margin-right: 15px;
+        }
+
+        .eye-icon {
+            color: var(--text-gray);
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .eye-icon:hover {
+            color: var(--white);
+        }
+
+        .balance-label {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 5px;
+        }
+
+        .balance-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-white);
+            letter-spacing: -1px;
+        }
+
+        /* Ações Rápidas */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 15px 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .action-btn:active {
+            background-color: #222;
+        }
+
+        .action-btn .icon-circle {
+            width: 36px;
+            height: 36px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-white);
+            font-size: 14px;
+        }
+
+        .action-btn.active .icon-circle {
+            background-color: var(--green-primary);
+            color: var(--bg-dark);
+        }
+
+        .action-btn span {
+            font-size: 11px;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        /* Botão Principal de Saque */
+        .main-withdraw-btn {
+            background-color: var(--green-primary);
+            color: var(--bg-dark);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            margin-bottom: 30px;
+            font-weight: 700;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(163, 230, 53, 0.2);
+        }
+
+        .main-withdraw-btn .left-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .main-withdraw-btn .left-content i {
+            font-size: 18px;
+        }
+
+        /* Movimentações */
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-white);
+            margin-bottom: 15px;
+        }
+
+        .transaction-card {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .transaction-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .transaction-icon {
+            width: 36px;
+            height: 36px;
+            background-color: rgba(163, 230, 53, 0.1);
+            color: var(--green-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .transaction-info strong {
+            display: block;
+            font-size: 14px;
+            color: var(--text-white);
+            margin-bottom: 4px;
+        }
+
+        .transaction-info span {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .transaction-value {
+            text-align: right;
+        }
+
+        .transaction-value strong {
+            display: block;
+            font-size: 14px;
+            color: var(--green-primary);
+            margin-bottom: 4px;
+        }
+
+        .transaction-value span {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        /* =========================================
+           MODAL DE SAQUE
+        ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-content {
+            background-color: var(--bg-modal);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 24px 24px 0 0;
+            padding: 25px 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1);
+            border-top: 1px solid var(--border-color);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .withdraw-value-box {
+            background: linear-gradient(145deg, #14260a, #0d1706);
+            border: 1px solid #2e4a1b;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .withdraw-value-box h3 {
+            font-size: 22px;
+            color: var(--green-primary);
+            font-weight: 700;
+        }
+
+        .withdraw-value-box p {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-top: 2px;
+        }
+
+        .badge-total {
+            background-color: var(--green-primary);
+            color: var(--bg-dark);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 16px 16px 45px;
+            color: var(--text-white);
+            font-size: 15px;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--green-primary);
+        }
+
+        .input-group .icon-left {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+        }
+
+        .input-group .icon-right {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-gray);
+            pointer-events: none;
+        }
+
+        .helper-text {
+            font-size: 11px;
+            color: var(--text-gray);
+            margin-top: -10px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .key-types-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .key-type-btn {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            color: var(--text-white);
+            font-size: 13px;
+            font-weight: 500;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .key-type-btn.active {
+            background-color: #222;
+            border-color: var(--green-primary);
+        }
+
+        .confirm-btn {
+            width: 100%;
+            background-color: var(--green-primary);
+            color: var(--bg-dark);
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Dropdown de Bancos */
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 0;
+            width: 100%;
+            background-color: #222;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .bank-option {
+            padding: 15px 16px;
+            font-size: 14px;
+            color: var(--text-white);
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .bank-option:last-child {
+            border-bottom: none;
+        }
+
+        .bank-option:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER DO USUÁRIO -->
+    <div class="user-header">
+        <div class="user-info">
+            <div class="avatar">M</div>
+            <div class="user-greeting">
+                <span>Bem-vindo(a)</span>
+                <strong>Matheus</strong>
+            </div>
+        </div>
+        <div class="notification-btn">
+            <i class="fa-solid fa-bell" style="color: var(--green-primary); font-size: 16px;"></i>
+        </div>
+    </div>
+
+    <!-- CARD DE SALDO -->
+    <div class="balance-card">
+        <div class="balance-header">
+            <div class="balance-brand">
+                <strong>ecred.</strong>
+                <span>Conta</span>
+            </div>
+            <!-- Olhinho adicionado aqui -->
+            <i class="fa-regular fa-eye eye-icon" id="btn-olho"></i>
+        </div>
+        <div class="account-info">
+            <span>Ag. 0001</span>
+            <span>Conta 70534-0</span>
+        </div>
+        <div class="balance-label">Saldo disponível</div>
+        <!-- Valores adicionados IDs -->
+        <div class="balance-value" id="display-saldo">R$ 20.000,00</div>
+    </div>
+
+    <!-- AÇÕES RÁPIDAS -->
+    <div class="quick-actions">
+        <!-- Ações configuradas via JS para abrir o modal -->
+        <div class="action-btn active" data-action="sacar">
+            <div class="icon-circle"><i class="fa-solid fa-arrow-up"></i></div>
+            <span>Sacar PIX</span>
+        </div>
+        <div class="action-btn" data-action="sacar">
+            <div class="icon-circle"><i class="fa-solid fa-barcode"></i></div>
+            <span>Pagar</span>
+        </div>
+        <div class="action-btn" data-action="sacar">
+            <div class="icon-circle"><i class="fa-solid fa-arrow-right-arrow-left"></i></div>
+            <span>Transferir</span>
+        </div>
+        <div class="action-btn" data-action="sacar">
+            <div class="icon-circle"><i class="fa-solid fa-file-lines"></i></div>
+            <span>Extrato</span>
+        </div>
+    </div>
+
+    <!-- BOTÃO PRINCIPAL DE SAQUE -->
+    <div class="main-withdraw-btn" data-action="sacar">
+        <div class="left-content">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>Sacar meu dinheiro via PIX</span>
+        </div>
+        <i class="fa-solid fa-chevron-right"></i>
+    </div>
+
+    <!-- MOVIMENTAÇÕES -->
+    <div class="section-title">Movimentações</div>
+    <div class="transaction-card">
+        <div class="transaction-left">
+            <div class="transaction-icon">
+                <i class="fa-solid fa-arrow-down"></i>
+            </div>
+            <div class="transaction-info">
+                <strong>Empréstimo Ecred</strong>
+                <span>Valor liberado</span>
+            </div>
+        </div>
+        <div class="transaction-value">
+            <!-- Valor da transação também com ID -->
+            <strong id="display-saldo-transacao">+ R$ 20.000,00</strong>
+            <span>Hoje</span>
+        </div>
+    </div>
+
+    <!-- MODAL DE SAQUE -->
+    <div class="modal-overlay" id="modal-saque">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Sacar via PIX</h2>
+                <button class="close-btn" id="fechar-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <label class="form-label">Valor do saque</label>
+            <div class="withdraw-value-box">
+                <div>
+                    <h3 id="modal-saldo">R$ 20.000,00</h3>
+                    <p>Todo o seu saldo disponível</p>
+                </div>
+                <span class="badge-total">TOTAL</span>
+            </div>
+
+            <label class="form-label">Seu banco</label>
+            <div class="input-group">
+                <i class="fa-solid fa-magnifying-glass icon-left"></i>
+                <input type="text" id="input-banco" placeholder="Digite o nome do banco" autocomplete="off">
+                <i class="fa-solid fa-chevron-down icon-right"></i>
+                <div class="dropdown-menu" id="lista-bancos"></div>
+            </div>
+            <span class="helper-text">Selecione o banco onde você tem conta para receber o PIX.</span>
+
+            <label class="form-label">Tipo de chave PIX</label>
+            <div class="key-types-grid">
+                <button class="key-type-btn" onclick="selecionarChave(this, 'CPF')">CPF</button>
+                <button class="key-type-btn" onclick="selecionarChave(this, 'Telefone')">Telefone</button>
+                <button class="key-type-btn" onclick="selecionarChave(this, 'E-mail')">E-mail</button>
+                <button class="key-type-btn" onclick="selecionarChave(this, 'Aleatória')">Aleatória</button>
+            </div>
+
+            <label class="form-label">Sua chave PIX</label>
+            <div class="input-group" style="margin-bottom: 5px;">
+                <input type="text" id="input-chave" placeholder="Escolha o tipo de chave acima" disabled>
+            </div>
+            <span class="helper-text" id="helper-chave">Primeiro escolha o tipo de chave acima.</span>
+
+            <button class="confirm-btn">Confirmar saque</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. PUXAR O SALDO E FORMATAR
+        // ==========================================
+        const saldoOriginal = localStorage.getItem('ecred_valor') || 'R$ 20.000,00';
+        
+        const displaySaldo = document.getElementById('display-saldo');
+        const displaySaldoTransacao = document.getElementById('display-saldo-transacao');
+        const modalSaldo = document.getElementById('modal-saldo');
+
+        // Variável para controlar se o saldo está escondido ou não
+        let saldoEscondido = false;
+
+        // Função para atualizar os valores na tela
+        function atualizarVisaoSaldo() {
+            if (saldoEscondido) {
+                displaySaldo.innerText = '••••••';
+                displaySaldoTransacao.innerText = '••••••';
+                modalSaldo.innerText = '••••••';
+            } else {
+                displaySaldo.innerText = saldoOriginal;
+                displaySaldoTransacao.innerText = '+ ' + saldoOriginal;
+                modalSaldo.innerText = saldoOriginal;
+            }
+        }
+
+        // Inicia mostrando o saldo
+        atualizarVisaoSaldo();
+
+        // ==========================================
+        // 2. LÓGICA DO OLHINHO
+        // ==========================================
+        const btnOlho = document.getElementById('btn-olho');
+        
+        btnOlho.addEventListener('click', () => {
+            saldoEscondido = !saldoEscondido; // Inverte o estado (true vira false, false vira true)
+            
+            // Troca o ícone
+            if (saldoEscondido) {
+                btnOlho.classList.remove('fa-eye');
+                btnOlho.classList.add('fa-eye-slash');
+            } else {
+                btnOlho.classList.remove('fa-eye-slash');
+                btnOlho.classList.add('fa-eye');
+            }
+            
+            // Atualiza os valores na tela
+            atualizarVisaoSaldo();
+        });
+
+
+        // ==========================================
+        // 3. LÓGICA DO MODAL (Abrir/Fechar)
+        // ==========================================
+        const modal = document.getElementById('modal-saque');
+        const fecharModalBtn = document.getElementById('fechar-modal');
+        const botoesAcao = document.querySelectorAll('[data-action="sacar"]');
+
+        // Abre o modal quando clica em qualquer botão com data-action="sacar"
+        botoesAcao.forEach(botao => {
+            botao.addEventListener('click', () => {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Fecha o modal ao clicar no X
+        fecharModalBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Impede que o clique feche o modal de forma errada
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            document.getElementById('lista-bancos').classList.remove('active');
+        });
+
+        // Fecha o modal ao clicar no fundo escuro
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                document.getElementById('lista-bancos').classList.remove('active');
+            }
+        });
+
+
+        // ==========================================
+        // 4. LISTA DE BANCOS (Dropdown)
+        // ==========================================
+        const bancos = [
+            "Banco do Brasil",
+            "Banco Santander",
+            "Caixa Econômica Federal",
+            "Banco Bradesco",
+            "Itaú Unibanco",
+            "Nubank",
+            "Banco Inter",
+            "C6 Bank",
+            "PicPay",
+            "Mercado Pago",
+            "PagSeguro",
+            "Banco Original",
+            "BTG Pactual",
+            "Sicredi",
+            "Sicoob"
+        ];
+
+        const inputBanco = document.getElementById('input-banco');
+        const listaBancos = document.getElementById('lista-bancos');
+
+        // Abre a lista ao clicar no campo de banco
+        inputBanco.addEventListener('focus', () => {
+            listaBancos.classList.add('active');
+            popularListaBancos(bancos);
+        });
+
+        // Fecha a lista se clicar fora do input (e fora da lista)
+        document.addEventListener('click', (e) => {
+            if (!inputBanco.contains(e.target) && !listaBancos.contains(e.target)) {
+                listaBancos.classList.remove('active');
+            }
+        });
+
+        // Filtro de busca
+        inputBanco.addEventListener('input', (e) => {
+            const termo = e.target.value.toLowerCase();
+            const filtrados = bancos.filter(b => b.toLowerCase().includes(termo));
+            popularListaBancos(filtrados);
+            listaBancos.classList.add('active'); // Garante que está aberto ao digitar
+        });
+
+        // Popula a lista de bancos na tela
+        function popularListaBancos(lista) {
+            listaBancos.innerHTML = ''; // Limpa
+            if (lista.length === 0) {
+                const div = document.createElement('div');
+                div.className = 'bank-option';
+                div.innerText = "Nenhum banco encontrado";
+                listaBancos.appendChild(div);
+                return;
+            }
+            lista.forEach(banco => {
+                const div = document.createElement('div');
+                div.className = 'bank-option';
+                div.innerText = banco;
+                // Ação ao clicar no banco
+                div.addEventListener('click', () => {
+                    inputBanco.value = banco;
+                    listaBancos.classList.remove('active');
+                });
+                listaBancos.appendChild(div);
+            });
+        }
+
+
+        // ==========================================
+        // 5. LÓGICA DO TIPO DE CHAVE
+        // ==========================================
+        const inputChave = document.getElementById('input-chave');
+        const helperChave = document.getElementById('helper-chave');
+        const botoesChave = document.querySelectorAll('.key-type-btn');
+
+        window.selecionarChave = function(btn, tipo) {
+            botoesChave.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            inputChave.disabled = false;
+            inputChave.focus();
+            inputChave.value = "";
+
+            if (tipo === 'CPF') {
+                inputChave.placeholder = "000.000.000-00";
+                helperChave.innerText = "Digite seu CPF.";
+                inputChave.type = 'text';
+            } else if (tipo === 'Telefone') {
+                inputChave.placeholder = "(00) 00000-0000";
+                helperChave.innerText = "Digite seu telefone com DDD.";
+                inputChave.type = 'tel';
+            } else if (tipo === 'E-mail') {
+                inputChave.placeholder = "seu@email.com";
+                helperChave.innerText = "Digite seu e-mail.";
+                inputChave.type = 'email';
+            } else {
+                inputChave.placeholder = "Digite sua chave aleatória";
+                helperChave.innerText = "Cole sua chave aleatória.";
+                inputChave.type = 'text';
+            }
+        }
+    </script>
+</body>
+</html>
